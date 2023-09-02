@@ -29,13 +29,17 @@ router.get(
         .send({ message: "Employee is not assigned to any parts!" });
     }
 
-    let employeeParts = [];
-    for (const business of businesses) {
-      const partsForEmployee = business.parts.get(req.currentUser.id);
-      if (partsForEmployee) {
-        employeeParts.push(...partsForEmployee);
-      }
-    }
+    let employeeParts = {};
+
+    businesses.forEach((business) => {
+      business.parts.forEach((userId, part) => {
+        const employeeId = employee._id;
+        if (!employeeParts[employeeId]) {
+          employeeParts[employeeId] = [];
+        }
+        employeeParts[employeeId].push(part)
+      });
+    });
 
     res.status(200).send(employeeParts);
   }
